@@ -1,0 +1,16 @@
+Title: Zig Zag
+Gameplay: A ball goes either right or left. Direction change with left mouse click. Game over when player falls off map.
+Made as a school assignment
+Created by Albin Fyhr
+
+Features:
+- Main Menu
+- UI
+- Simple but extremely hard gameplay
+- Slow and speedpads
+- Score based on how many coins collected
+- Tracks highscore (does not save on exit)
+
+Known bugs:
+- Map sometimes creates a small gap between tiles
+  Most likely math problem in mapgeneration script
