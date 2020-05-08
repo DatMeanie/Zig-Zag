@@ -8,16 +8,17 @@ using System.IO;
 public class HighScore : MonoBehaviour {
 	void Start () {
 
-        if (File.Exists(Application.persistentDataPath + "/savedRecord"))
+        if ( File.Exists( Application.persistentDataPath + "/savedRecord" ) )
         {
             BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/savedRecord", FileMode.Open);
-            GetComponent<Text>().text = "Highscore: " + (int)bf.Deserialize(file);
+            FileStream file = File.Open( Application.persistentDataPath + "/savedRecord", FileMode.Open );
+            GetComponent<Text>().text = "Highscore: " + (int)bf.Deserialize( file );
             file.Close();
         }
-        if (GameObject.Find("DataCollector"))
+
+        if ( GameObject.Find( "DataCollector" ) )
         {
-            GetComponent<Text>().text = "Highscore: " + GameObject.Find("DataCollector").GetComponent<DataSaver>().ReturnHighScore();
+            GetComponent<Text>().text = "Highscore: " + DataSaver.highScore;
         }
     }
 }

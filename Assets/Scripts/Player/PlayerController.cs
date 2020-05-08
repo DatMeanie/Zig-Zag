@@ -4,85 +4,123 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
-    
-    //Player goes either left or right with certain speed
-    //Speed increase of time with time.deltaTime
 
-    //values
-    Rigidbody rb;
+    /////////////////////////////////////////////////////////////
+    // PUBLIC VARIABLES
+    /////////////////////////////////////////////////////////////
+
     public int movementSpeed = 10;
+
+    [SerializeField] int maxSpeed = 0;
+    [SerializeField] float increaseSpeedTime = 0;
+
+    [SerializeField] Animator speedText = null;
+
+    /////////////////////////////////////////////////////////////
+    // PRIVATE VARIABLES
+    /////////////////////////////////////////////////////////////
+    
+    Rigidbody rb = null;
+
     bool moveRight = false;
-    bool playing = false;
-    float timer = 0;
-    int maxSpeed;
-    bool noMoreSpeed = false; 
-	void Start () {
+    bool isPlaying = false;
+
+    /////////////////////////////////////////////////////////////
+    //
+    //              INITIALIZE & UPDATE
+    //
+    /////////////////////////////////////////////////////////////
+
+    void Start () {
+        
         maxSpeed = movementSpeed + 10;
         rb = GetComponent<Rigidbody>();
 	}
+    
+    /////////////////////////////////////////////////////////////
 
-	void Update()
+    void Update()
     {
-        ChangeDirection();
-        if(timer >= 10 && movementSpeed != maxSpeed && !noMoreSpeed)
+        /////////////////////////////////////////////////////////////
+        // APPLY SPEED TO PLAYER
+        /////////////////////////////////////////////////////////////
+
+        if ( isPlaying == true )
         {
-            movementSpeed++;
-            timer = 0;
-            GameObject.Find("SpeedText").GetComponent<Animator>().Play("SpeedUp");
-            if(movementSpeed == maxSpeed)
+            if ( moveRight == false )
             {
-                noMoreSpeed = true;
+                rb.velocity = new Vector3( movementSpeed, rb.velocity.y, 0 );
+            }
+            else if ( moveRight == true )
+            {
+                rb.velocity = new Vector3( 0, rb.velocity.y, movementSpeed );
             }
         }
-        //player has clicked
-        if (playing)
+
+        /////////////////////////////////////////////////////////////
+        // CHECK FOR INPUT
+        /////////////////////////////////////////////////////////////
+
+        if ( Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor )
+            InputPC();
+        else if ( Application.platform == RuntimePlatform.Android )
+            InputAndroid();
+        
+        /////////////////////////////////////////////////////////////
+    }
+
+    /////////////////////////////////////////////////////////////
+    //
+    //                  INPUT FUNTIONS
+    //
+    /////////////////////////////////////////////////////////////
+
+    void InputPC()
+    {
+        /////////////////////////////////////////////////////////////
+        // SWITCH DIRECTION
+        /////////////////////////////////////////////////////////////
+
+        if ( Input.GetMouseButtonDown( 0 ) == true )
         {
-            timer += Time.deltaTime;
-            if (!moveRight)
+            if ( isPlaying == false )
+                StartCoroutine( IncreaseSpeed() );
+
+            isPlaying = true;
+            moveRight = !moveRight;
+        }
+        
+        /////////////////////////////////////////////////////////////
+    }
+
+    /////////////////////////////////////////////////////////////
+
+    void InputAndroid()
+    {
+        // Can't remember how this worked. lol
+        foreach ( Touch t in Input.touches )
+        {
+            if ( t.phase == TouchPhase.Began )
             {
-                rb.velocity = new Vector3(1 * movementSpeed, rb.velocity.y, 0);
-            }
-            else if (moveRight)
-            {
-                rb.velocity = new Vector3(0, rb.velocity.y, 1 * movementSpeed);
+                isPlaying = true;
+                moveRight = !moveRight;
             }
         }
     }
 
-    void ChangeDirection()
+    /////////////////////////////////////////////////////////////
+    //
+    //              ENUMERATORS
+    //
+    /////////////////////////////////////////////////////////////
+
+    IEnumerator IncreaseSpeed()
     {
-        if(Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                playing = true;
-                if (moveRight)
-                {
-                    moveRight = false;
-                }
-                else if (!moveRight)
-                {
-                    moveRight = true;
-                }
-            }
-        }
-        else
-        {
-            foreach (Touch t in Input.touches)
-            {
-                if (t.phase == TouchPhase.Began)
-                {
-                    playing = true;
-                    if (moveRight)
-                    {
-                        moveRight = false;
-                    }
-                    else if (!moveRight)
-                    {
-                        moveRight = true;
-                    }
-                }
-            }
-        }
+        yield return new WaitForSeconds( increaseSpeedTime );
+        movementSpeed++;
+        speedText.Play( "SpeedUp" );
+        StartCoroutine( IncreaseSpeed() );
     }
+
+    /////////////////////////////////////////////////////////////
 }

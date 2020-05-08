@@ -4,43 +4,59 @@ using UnityEngine;
 
 public class BackgroundMenu : MonoBehaviour {
 
+    /////////////////////////////////////////////////////////////
+    // VARIABLES
+    /////////////////////////////////////////////////////////////
+
     //A mix of the GenerateMap and Playecontroller scripts. Functions almost identically
     //Simplified both scripts for an adequate background
 
     public GameObject platform;
     public GameObject player;
     Vector3 position = new Vector3(12, -26, 10);
-    GameObject[] goArray = new GameObject[30];
+    GameObject[] instantiatedPlatforms = new GameObject[ 30 ];
+    
     int currentTile = 0;
-	void Start () {
+    
+    /////////////////////////////////////////////////////////////
+
+    void Start ()
+    {
         int count = 0;
-        for (int i = 0; i < 30; i++)
+        for ( int i = 0; i < 30; i++ )
         {
-            goArray[i] = Instantiate(platform);
-            goArray[i].transform.position = new Vector3(count * 100, count * 100, count * 100);
-            count += 2;
+            instantiatedPlatforms[ i ] = Instantiate( platform );
+            instantiatedPlatforms[ i ].transform.position = new Vector3( count * 100, count * 100, count * 100 );
+            count += 2; // 2 is the size of the spawned platform
         }
 	}
-	void Update () {
-        //simulate player
-        player.GetComponent<Rigidbody>().velocity = new Vector3(1 * 10, 0, 0);
-        if (Vector3.Distance(transform.position, player.transform.position) < 8)
+    
+    /////////////////////////////////////////////////////////////
+	
+    void Update() 
+    {
+        player.GetComponent<Rigidbody>().velocity = new Vector3( 10.0f, 0, 0 );
+        if ( Vector3.Distance( transform.position, player.transform.position) < 8 )
         {
             MakeMap();
         }
     }
-    //Simplified version of GenerateMap script
+    
+    /////////////////////////////////////////////////////////////
+    
     void MakeMap()
     {
-        if (currentTile == 30)
+        if ( currentTile == 30 )
         {
             currentTile = 0;
         }
         transform.position = position;
-        goArray[currentTile].transform.position = position;
-        goArray[currentTile].transform.rotation = Quaternion.identity;
-        goArray[currentTile].GetComponent<Rigidbody>().isKinematic = true;
-        position = new Vector3(position.x + 2, position.y, position.z);
+        instantiatedPlatforms[ currentTile ].transform.position = position;
+        instantiatedPlatforms[ currentTile ].transform.rotation = Quaternion.identity;
+        instantiatedPlatforms[ currentTile ].GetComponent<Rigidbody>().isKinematic = true;
+        position = new Vector3( position.x + 2, position.y, position.z );
         currentTile++;
     }
+
+    /////////////////////////////////////////////////////////////
 }

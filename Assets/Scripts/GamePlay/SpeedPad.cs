@@ -4,18 +4,25 @@ using UnityEngine;
 
 public class SpeedPad : MonoBehaviour {
 
-    //play enter pad, player change speed
-    private void OnTriggerEnter(Collider other)
+    PlayerController player;
+
+    private void Start()
     {
-        if(other.gameObject.name == "Player")
+        player = GameObject.Find( "Player" ).GetComponent<PlayerController>();
+    }
+
+    private void OnTriggerEnter( Collider other )
+    {
+        if( other.gameObject.name == "Player" )
         {
-            StartCoroutine(Speed(other.gameObject));
+            StartCoroutine( Speed() );
         }
     }
-    IEnumerator Speed(GameObject go)
+
+    IEnumerator Speed()
     {
-        go.GetComponent<PlayerController>().movementSpeed += 2;
+        player.movementSpeed += 2;
         yield return new WaitForSeconds(1);
-        go.GetComponent<PlayerController>().movementSpeed -= 2;
+        player.movementSpeed -= 2;
     }
 }

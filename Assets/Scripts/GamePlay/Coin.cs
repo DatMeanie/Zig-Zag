@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour {
 
-    //player enter coin, coin vanish and add to score
+    DataSaver dataSaver = null;
+    new Renderer renderer = null;
+
+    private void Start()
+    {
+        dataSaver = GameObject.Find( "DataCollector" ).GetComponent<DataSaver>();
+        renderer = GetComponent<Renderer>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if( other.gameObject.name == "Player" && renderer.enabled == true )
         {
+            dataSaver.AddCoin();
             StartCoroutine(Vanish());
         }
     }
+
     IEnumerator Vanish()
     {
-        GameObject.Find("DataCollector").GetComponent<DataSaver>().AddCoin();
         //makes it invisible
-        GetComponent<MeshRenderer>().enabled = false;
-        yield return new WaitForSeconds(2);
-        GetComponent<MeshRenderer>().enabled = true;
+        renderer.enabled = false;
+        yield return new WaitForSeconds( 2 );
+        renderer.enabled = true;
     }
 }

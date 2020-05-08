@@ -8,6 +8,6 @@ public class PlayAgain : MonoBehaviour {
 	public void ResetLevel()
     {
         GameObject.Find("DataCollector").GetComponent<DataSaver>().ResetCount();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene( 1 );
     }
 }

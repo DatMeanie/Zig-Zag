@@ -7,31 +7,42 @@ using System.IO;
 
 public class DataSaver : MonoBehaviour {
 
-    //Saves data between scenes
+    /////////////////////////////////////////////////////////////
+    // VARIABLES
+    /////////////////////////////////////////////////////////////
 
+    public static DataSaver singleton = null;
+    
     public int coinCount = 0;
-    public static int highScore;
-    public static DataSaver Instance;
+    public static int highScore = 0;
 
     public bool newHighScore = false;
+
+    /////////////////////////////////////////////////////////////
+    // AWAKE & START
+    /////////////////////////////////////////////////////////////
+
     private void Awake()
     {
-        //only one datasaver can exist
-        if (Instance == null)
+        if( singleton == null )
         {
-            DontDestroyOnLoad(gameObject);
-            Instance = this;
+            DontDestroyOnLoad( gameObject );
+            singleton = this;
         }
-        else if(Instance != this)
+        else if( singleton != this )
         {
-            Destroy(gameObject);
+            Destroy( gameObject );
         }
     }
+    
+    /////////////////////////////////////////////////////////////
+
     public void AddCoin()
     {
         coinCount++;
-        GameObject.Find("ScoreText").GetComponent<Text>().text = "Score: " + coinCount;
-        GameObject.Find("PointText").GetComponent<Animator>().Play("CoinTaken");
+        GameObject.Find( "ScoreText" ).GetComponent<Text>().text = "Score: " + coinCount;
+        GameObject.Find( "PointText" ).GetComponent<Animator>().Play("CoinTaken");
+
         if (coinCount > highScore)
         {
             //highscore saved
@@ -55,13 +66,14 @@ public class DataSaver : MonoBehaviour {
             }
         }
     }
-    public int ReturnHighScore()
-    {
-        return highScore;
-    }
+
+    /////////////////////////////////////////////////////////////
+
     public void ResetCount()
     {
         newHighScore = false;
         coinCount = 0;
     }
+
+    /////////////////////////////////////////////////////////////
 }
